@@ -36,3 +36,40 @@
     transform: rotate(360deg);
   }
 }
+
+.tabs-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  background-color: #f2f2f2;
+}
+
+.tab-item {
+  padding: 10px;
+  cursor: pointer;
+  font-weight: bold;
+  color: #333;
+}
+
+.tab-item.active {
+  background-color: #61dafb;
+  color: white;
+}
+
+.note-editor {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  min-height: 200px;
+}
+
+.markdown-viewer {
+  padding: 20px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  min-height: 200px;
+  background-color: #f9f9f9;
+}
+
+/* Add more styles as needed? */

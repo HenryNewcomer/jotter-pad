@@ -14,11 +14,9 @@ const Tabs = () => {
     return (
         <div className="tabs-container">
             {notes.map((note, index) => (
-                <div 
-                    key={index}
+                <div key={index}
                     className={`tab-item ${selectedNote === note.id ? 'active' : ''}`}
-                    onClick={() => handleTabClick(note.id)}
-                >
+                    onClick={() => handleTabClick(note.id)}>
                     {note.title}
                 </div>
             ))}
