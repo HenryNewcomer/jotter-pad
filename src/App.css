@@ -1,48 +1,37 @@
 .App {
   text-align: center;
-}
-
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
-}
-
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+  font-family: 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+  height: 100vh;
+  background-color: #f4f4f8;
 }
 
-.App-link {
-  color: #61dafb;
+.header {
+  background-color: #5c6bc0; /* A more appealing purplish color */
+  padding: 20px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.content {
+  display: flex;
+  justify-content: space-around;
+  align-items: start;
+  flex-wrap: wrap;
+  max-width: 1200px;
+  margin-top: 20px;
 }
 
 .tabs-container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px;
+  flex-grow: 1;
   background-color: #f2f2f2;
+  padding: 10px;
+  margin: 0 10px;
+  max-height: 500px;
+  overflow-y: auto;
 }
 
 .tab-item {
@@ -50,6 +39,7 @@
   cursor: pointer;
   font-weight: bold;
   color: #333;
+  margin-right: 5px;
 }
 
 .tab-item.active {
@@ -57,19 +47,119 @@
   color: white;
 }
 
-.note-editor {
+.note-editor, .markdown-viewer, .note-list {
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 5px;
   min-height: 200px;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 10px;
+}
+
+.note-list {
+  background-color: #f9f9f9;
+}
+
+.note-list-item {
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+}
+
+.button {
+  background-color: #5c6bc0;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+}
+
+.button:hover {
+  background-color: #4da8d8;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-input-label {
+  background-color: #61dafb;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin: 10px;
+  display: inline-block;
+}
+
+.file-input-label:hover {
+  background-color: #4da8d8;
+}
+
+.file-input-area {
+  background-color: #e3e4e8;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  text-align: left;
 }
 
 .markdown-viewer {
   padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  min-height: 200px;
+  max-height: 300px;
+  overflow-y: auto;
   background-color: #f9f9f9;
+  font-family: 'Roboto', sans-serif;
+  line-height: 1.6;
+  text-align: left;
 }
 
-/* Add more styles as needed? */
+.note-editor {
+  font-family: 'Courier New', Courier, monospace;
+  line-height: 1.5;
+  padding: 15px;
+  border: none;
+  box-shadow: 0 0 10px rgba(0,0,0,0.1);
+  resize: vertical;
+}
+
+.notes-sidebar {
+  width: 25%;
+  margin-right: 20px;
+}
+
+.editor-viewer-container {
+  width: 75%;
+}
+
+.editor-viewer {
+  text-align: left;
+}
+
+.content {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.note-editor, .markdown-viewer {
+  width: 100%;
+  max-width: none;
+}
+
+@media (max-width: 768px) {
+  .notes-sidebar {
+      width: 100%;
+      margin-bottom: 20px;
+  }
+
+  .editor-viewer-container {
+      width: 100%;
+  }
+
+  .content {
+      flex-direction: column;
+  }
+}

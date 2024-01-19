@@ -1,26 +1,33 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useRef, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import Tabs from './components/Tabs';
 import NoteEditor from './components/NoteEditor';
 import MarkdownViewer from './components/MarkdownViewer';
 import NoteList from './components/NoteList';
-import { addNote } from './redux/slices/notesSlice';
+import { addNote, updateNoteContent } from './redux/slices/notesSlice';
 import './App.css';
 
-// Mock data for testing
-const mockNotes = [
-    { id: 1, title: 'Note 1', content: 'Content for note 1' },
-    { id: 2, title: 'Note 2', content: 'Content for note 2' },
-    // Add more notes as needed
-];
-
 function App() {
-    const dispatch = useDispatch()
-    const [mode, setMode] = useState('edit'); // 'edit' or 'view';
+    const dispatch = useDispatch();
+    const [mode, setMode] = useState('edit'); // 'edit' or 'view'
+    const notes = useSelector(state => state.notes); // Accessing the notes from Redux store
     const selectedNote = useSelector(state => state.selectedNote); // Get the selected note from Redux store
+    const fileInputRef = useRef(null);
 
+    // Create a new note
+    const handleNewNote = () => {
+        const newNote = {
+            id: Date.now(),
+            title: 'New Note',
+            content: '',
+            lastModified: new Date().toISOString()
+        };
+        dispatch(addNote(newNote));
+        dispatch(selectNote(newNote.id)); // Automatically select the new note for editing
+        setMode('edit'); // Switch to edit mode
+    };
 
-    // Function to handle file selection and read its content
+    // Handle file input for reading notes
     const handleFileRead = async (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -28,41 +35,62 @@ function App() {
             reader.onloadend = (e) => {
                 const content = e.target.result;
                 const newNote = { id: Date.now(), title: file.name, content };
-                dispatch(addNote(newNote)); // Correctly placed inside onloadend
+                dispatch(addNote(newNote));
             };
             reader.readAsText(file);
         }
     };
 
-    // Function to save the current note to a file
-    const handleSaveNote = useCallback(() => {
-        const currentNote = mockNotes.find(note => note.id === selectedNote);
-        if (currentNote) {
-            const blob = new Blob([currentNote.content], { type: 'text/plain' });
+    // Handle saving the current note to a file
+    const handleSaveNote = useCallback((noteId) => {
+        const noteToSave = notes.find(note => note.id === noteId);
+        if (noteToSave) {
+            const blob = new Blob([noteToSave.content], { type: 'text/plain' });
             const href = URL.createObjectURL(blob);
             const link = document.createElement('a');
             link.href = href;
-            link.download = `${currentNote.title}.txt`;
+            link.download = `${noteToSave.title}.txt`;
             document.body.appendChild(link);
             link.click();
             document.body.removeChild(link);
         }
-    }, [selectedNote, mockNotes]);
+    }, [notes]);
+
+    // Trigger the hidden file input when the custom button is clicked
+    const handleFileInputClick = () => {
+        fileInputRef.current.click();
+    };
 
     return (
         <div className="App">
-            <h1>Jotter Pad</h1>
-            <button onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
-                Switch to {mode === 'edit' ? 'View' : 'Edit'} Mode
-            </button>
-
-            {mode === 'edit' ? <NoteEditor /> : <MarkdownViewer />}
-
-            {/* Render the NoteList component */}
-            <NoteList />
-
-            {/* Conditionally render NoteEditor or MarkdownViewer based on mode */}
-            {mode === 'edit' ? <NoteEditor /> : <MarkdownViewer />}
+            <header className="header">
+                <h1>Jotter Pad</h1>
+                {/* Button to create a new note */}
+                <button className="button" onClick={handleNewNote}>New Note</button>
+            </header>
+            <div className="content">
+                <div className="notes-sidebar">
+                    {/* NoteList component shows the list of notes on the left */}
+                    <NoteList handleSaveNote={handleSaveNote} />
+                    {/* File input to upload new notes */}
+                    <label className="file-input-label" onClick={handleFileInputClick}>
+                        Choose File
+                    </label>
+                    <input type="file" onChange={handleFileRead} className="file-input" ref={fileInputRef} />
+                </div>
+                <div className="editor-viewer-container">
+                    {/* Tabs component to switch between different notes */}
+                    <Tabs />
+                    <div className="editor-viewer">
+                        {/* Toggle button for Edit/View mode */}
+                        <button className="button" onClick={() => setMode(mode === 'edit' ? 'view' : 'edit')}>
+                            Switch to {mode === 'edit' ? 'View' : 'Edit'} Mode
+                        </button>
+                        {/* Conditional rendering based on mode */}
+                        {selectedNote && (mode === 'edit' ? <NoteEditor /> : <MarkdownViewer />)}
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
